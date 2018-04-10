@@ -30,8 +30,8 @@ $(document).ready(function() {
   instantiateProjectiles(projectileNumber);
   playerShip=new Player();
   enemyMoveInterval = setInterval(moveEnemies,moveTime);
-  board= $('body');
 });
+
 
 function instantiateProjectiles(projectileNumber){
   for(var i=0;i<projectileNumber;i++){
@@ -52,7 +52,7 @@ document.addEventListener('keydown',function (evt){
 });
 
 function instantiateEnemies() {
-  count=0;
+  count = 0;
   for(var j=0;j<4;j++){
     for (var i=0;i<11;i++){
       div=createGameObject();
@@ -67,8 +67,9 @@ function instantiateEnemies() {
       if(j % 2 != 0) offset=horizontalOffset;
       div.style.left = toPixels(startingPosX + horizontalSpacing * i + offset);
       img.src = alienSprites[j];
-      enemyShips[count]=div;
+      enemyShips[count] = div; 
       count++;
+      div.style.zIndex = "-1";
     }
   } 
 }
@@ -85,6 +86,10 @@ function createGameObject(sprite=""){
     img.src=sprite;
   }
   div.appendChild(img);
+  div.style.position = "absolute";
+  div.style.top = "600px";
+  div.style.left = "500px";
+  img.src=playerSprite;
   return div;
 }
 
@@ -134,6 +139,7 @@ class Player {
     this.playerShip.style.left = toPixels(parseInt(this.playerShip.style.left) - userSpeed);
   }
 
+
   shoot(){
     var projectile = projectiles.pop();
     projectile.style.left = toPixels(parseInt(this.playerShip.style.left)+5);
@@ -142,3 +148,34 @@ class Player {
   }
 }
 
+
+function gameController() {  
+  // switch(div.className){
+  //   case "row0":
+  //     userScore+=topRowScore
+  //   break
+  //   case "row1":
+  //     userScore+=secondRowScore
+  //   break
+  //   case "row2":
+  //     userScore+=thirdRowScore
+  //   break
+  //   case "row3":
+  //     userScore+=bottomRowScore
+  //   break
+  // }
+  document.getElementById("show_score").innerHTML=("Your score: " + userScore); 
+
+  document.getElementById("user_score").innerHTML=(userScore);
+
+  if (livesRemaining === 0) {
+    allScores.push(userScore);
+    allScores.sort();
+    highScore = allScores[allScores.length - 1];
+  }
+  document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
+
+
+  document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
+
+}

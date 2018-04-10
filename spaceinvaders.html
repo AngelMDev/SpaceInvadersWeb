@@ -10,9 +10,16 @@
 <body background="https://www.jpl.nasa.gov/assets/images/content/tmp/home/missions_bg_image.jpg" id="board">
 
   <div id="scoreboard">
-      <span id="show_score"> Your Score: 0 </span> 
-      <span id="show_lives"> Lives remaining: 3 </span>
-      <span id="high_score">  Highest Score: 1050  by username </span>
+      <span id="show_score">  </span> 
+      <span id="show_lives">  </span>
+      <span id="high_score">  </span>
   </div>
+
+  <form id="final_form" method="get">
+    Game over! Your score was <span id="user_score">  </span> <br>
+    Choose a Username: <input type="text" name="userName"><br>
+    <input type="submit" value="Submit" class="final_button">
+    <br>
+  </form>
 
 </body>
