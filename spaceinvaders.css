@@ -4,6 +4,64 @@ body, html {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: black;
+  font-family: 'Epson Pixeled Regular', normal, normal;
+}
+
+@font-face {
+  font-family: 'Epson Pixeled Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('assets/fonts/Epson Pixeled Regular'), url('assets/fonts/Epson Pixeled.woff') format('woff');
+  }
+
+#starfield {
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+#scoreboard {
+  height: 50px;    
+  width: 100%;
+  font-size: 12px;
+  line-height: 50px;
+  text-align: left;
+  color: white;
+  display: inline-block;
+  float: left;
+  padding-left: 100px;
+}
+
+#high_score {
+  padding-left: 50px;
+}
+#show_lives {
+  padding-left: 50px;
+}
+
+#final_form {
+  height: auto;    
+  width: 35%;
+  font-size: 12px;
+  line-height: 50px;
+  text-align: center;
+  color: white;
+  display: inline-block;
+  background-color: darkslateblue;
+  border: 2px solid lime;
+  margin-left: 30%;
+  z-index: 1;
+  visibility: hidden;
+}
+
+input.final_button {
+  background-color: lime;
+  color: black;
+  border: 3px solid white;
+  font-family: 'Epson Pixeled Regular', normal, normal;
+  font-weight: bold;
+}
+input.final_button:hover {
+  background-color: darkslategray;
+  color: white;
 }
 
