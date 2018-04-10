@@ -23,13 +23,18 @@ var projectiles=[];
 reverse=false;
 var playerShip;
 var enemyShips=[];
-
+var userScore=0;
+var highScore=0;
+var allScore=[];
+var livesRemaining=3;
+var userName='';
 
 $(document).ready(function() {
   instantiateEnemies();
   instantiateProjectiles(projectileNumber);
   playerShip=new Player();
   enemyMoveInterval = setInterval(moveEnemies,moveTime);
+  gameController();
 });
 
 
@@ -55,9 +60,9 @@ function instantiateEnemies() {
   count = 0;
   for(var j=0;j<4;j++){
     for (var i=0;i<11;i++){
-      div=createGameObject();
+      var div=createGameObject();
       //Get first (and only) child of div, which is an img
-      img=div.children[0];
+      var img=div.children[0];
       div.style.position = "absolute";
       div.style.top = toPixels(startingPosY + verticalSpacing * j);
       div.classList.add('enemy');
@@ -89,7 +94,7 @@ function createGameObject(sprite=""){
   div.style.position = "absolute";
   div.style.top = "600px";
   div.style.left = "500px";
-  img.src=playerSprite;
+  console.log(img.src)
   return div;
 }
 
