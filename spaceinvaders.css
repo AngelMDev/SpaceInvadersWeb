@@ -4,10 +4,38 @@ body, html {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: 'Courier New', Courier, monospace
+  font-family: 'Epson Pixeled Regular', normal, normal;
+
 }
 
-starfield {
+@font-face {
+  font-family: 'Epson Pixeled Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('assets/fonts/Epson Pixeled Regular'), url('assets/fonts/Epson Pixeled.woff') format('woff');
+  }
+
+#starfield {
   background-attachment: fixed;
+  background-size: cover;
+}
+
+#scoreboard {
+  height: 50px;    
+  width: 100%;
+  font-size: 12px;
+  line-height: 50px;
+  text-align: left;
+  color: white;
+  display: inline-block;
+  float: left;
+  padding-left: 100px;
+}
+
+#high_score {
+  padding-left: 50px;
+}
+#show_lives {
+  padding-left: 50px;
 }
 

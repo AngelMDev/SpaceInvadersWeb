@@ -11,6 +11,7 @@ $(document).ready(function() {
   instantiatePlayer();
 });
 
+
 function instantiateEnemies() {
   for(var j=0;j<4;j++){
     for (var i=0;i<11;i++){
@@ -44,3 +45,4 @@ function instantiatePlayer(){
 function toPixels(integer){
   return integer+"px";
 }
+
