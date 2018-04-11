@@ -1,5 +1,6 @@
 
 var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
+
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
@@ -10,6 +11,7 @@ var horizontalOffset=3;
 var verticalSpacing=8;
 var projectileSpeed=6;
 var userSpeed=1;
+
 //Enemy move distance
 var moveDistanceX=3;
 var moveDistanceY=5;
@@ -20,7 +22,7 @@ var moveTurns=5;
 //Keeps current move turn
 var movesRemaining=moveTurns;
 //Number of projectiles instantiated when the game starts
-var projectileNumber=10;
+var projectileNumber=20;
 var projectiles = new Array();
 reverse=false;
 var playerShip;
@@ -125,9 +127,11 @@ class Player {
 
   instantiatePlayer(){
     var div = createGameObject(playerSprite);
+
     div.style.position = "absolute";
     div.style.top = "85%";
     div.style.left = "50%";
+
     return div;
   }
 
@@ -162,12 +166,11 @@ class Projectile {
     this.projectile.style.left = toPixels(parseInt(playerShip.left())+0.5);
     this.projectile.style.top = toPixels(parseInt(playerShip.top())+3.5);
     this.projectile.style.visibility ='visible';
-    var moveProjectileInterval=setInterval(this.move(direction),300);
+    var moveProjectileInterval=setInterval(this.move,projectileMoveFreq,direction,this.projectile);
   }
 
-  move(direction){
-    console.log("moving");
-    this.projectile.style.top = toPixels(parseInt(this.projectile.style.top) + projectileSpeed * -direction);
+  move(direction,projectile){
+    projectile.style.top = toPixels(parseInt(projectile.style.top) + projectileSpeed *-direction);
   }
 }
 
