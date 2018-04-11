@@ -1,4 +1,6 @@
+
 var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
+
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
@@ -30,7 +32,7 @@ var userScore=0;
 var highScore=0;
 var allScore=[];
 var livesRemaining=3;
-var userName=""
+var userName='';
 
 
 $(document).ready(function() {

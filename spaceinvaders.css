@@ -5,6 +5,8 @@ body, html {
   padding: 0;
   overflow: hidden;
   font-family: 'Epson Pixeled Regular', normal, normal;
+  border: 10px solid darkslateblue;
+  box-sizing: border-box;
 }
 
 @font-face {
