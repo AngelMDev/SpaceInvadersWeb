@@ -1,6 +1,6 @@
-var alienSprites=["assets/blue_alien.png","assets/blue_alien2.png","assets/green_alien.png","assets/red_alien.png"]
-var playerSprite="assets/player.png";
-var projectileSprite="assets/projectile.png"
+var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
+var playerSprite="assets/sprites/player.png";
+var projectileSprite="assets/sprites/projectile.png"
 var board; 
 var startingPosY=80;
 var startingPosX=100;
