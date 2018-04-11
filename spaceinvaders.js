@@ -1,4 +1,5 @@
-var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
+
+var alienSprites=["assets/sprites/blue_alien.png","assets/sprite/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
@@ -7,6 +8,7 @@ var startingPosX=100;
 var horizontalSpacing=75;
 var horizontalOffset=40;
 var verticalSpacing=50;
+var projectileSpeed=60;
 var userSpeed=20;
 //Enemy move distance
 var moveDistanceX=25;
@@ -19,7 +21,7 @@ var moveTurns=5;
 var movesRemaining=moveTurns;
 //Number of projectiles instantiated when the game starts
 var projectileNumber=10;
-var projectiles=[];
+var projectiles = new Array();
 reverse=false;
 var playerShip;
 var enemyShips=[];
@@ -29,22 +31,15 @@ var allScore=[];
 var livesRemaining=3;
 var userName='';
 
+
 $(document).ready(function() {
-  instantiateEnemies();
   instantiateProjectiles(projectileNumber);
-  playerShip=new Player();
-  enemyMoveInterval = setInterval(moveEnemies,moveTime);
   gameController();
+  instantiateEnemies();
+  playerShip=new Player();
+  enemyMoveInterval = setInterval(moveEnemies,moveTime);  
 });
 
-
-function instantiateProjectiles(projectileNumber){
-  for(var i=0;i<projectileNumber;i++){
-    var projectile=createGameObject(projectileSprite);
-    projectile.style.visibility="hidden";
-    projectiles[i]=projectile;
-  }
-}
 
 document.addEventListener('keydown',function (evt){
   if(evt.which === 37){
@@ -55,6 +50,12 @@ document.addEventListener('keydown',function (evt){
     playerShip.shoot();
   }
 });
+
+function instantiateProjectiles(projectileNumber){
+  for(var i=0;i<projectileNumber;i++){
+    projectiles.push(new Projectile());
+  }
+}
 
 function instantiateEnemies() {
   count = 0;
@@ -84,18 +85,15 @@ function toPixels(integer){
 }
 
 function createGameObject(sprite=""){
-  var div = document.createElement("div");
-  document.body.appendChild(div);
-  var img = document.createElement("img");
+  var gameObject = document.createElement("div");
+  document.body.appendChild(gameObject);
+  var objectSprite = document.createElement("img");
   if(sprite!=""){
-    img.src=sprite;
+    objectSprite.src=sprite;
   }
-  div.appendChild(img);
-  div.style.position = "absolute";
-  div.style.top = "600px";
-  div.style.left = "500px";
-  console.log(img.src)
-  return div;
+  gameObject.appendChild(objectSprite);
+  gameObject.style.position = "absolute";
+  return gameObject;
 }
 
 function moveEnemies(){
@@ -125,15 +123,19 @@ class Player {
   }
 
   instantiatePlayer(){
-    var div = document.createElement("div");
-    document.body.appendChild(div);
-    var img = document.createElement("img");
-    div.appendChild(img);
+    var div = createGameObject(playerSprite);
     div.style.position = "absolute";
     div.style.top = "600px";
     div.style.left = "500px";
-    img.src=playerSprite;
     return div;
+  }
+
+  left() {
+    return this.playerShip.style.left;
+  }
+
+  top(){
+    return this.playerShip.style.top;
   }
 
   moveRight(){
@@ -143,13 +145,28 @@ class Player {
   moveLeft(){
     this.playerShip.style.left = toPixels(parseInt(this.playerShip.style.left) - userSpeed);
   }
-
-
   shoot(){
-    var projectile = projectiles.pop();
-    projectile.style.left = toPixels(parseInt(this.playerShip.style.left)+5);
-    projectile.style.top = this.playerShip.style.top;
-    projectile.style.visibility ='visible';
+    var projectile=projectiles.pop();
+    projectile.shoot(1);
+  }
+}
+
+class Projectile {
+  constructor(){
+    this.projectile=createGameObject(projectileSprite);
+    this.projectile.style.visibility="hidden";
+  }
+  //moves projectile in the specified direction (1 for up or -1 for down)
+  shoot(direction){   
+    this.projectile.style.left = toPixels(parseInt(playerShip.left())+6);
+    this.projectile.style.top = toPixels(parseInt(playerShip.top())-20);
+    this.projectile.style.visibility ='visible';
+    var moveProjectileInterval=setInterval(this.move(direction),300);
+  }
+
+  move(direction){
+    console.log("moving");
+    this.projectile.style.top = toPixels(parseInt(this.projectile.style.top) + projectileSpeed * -direction);
   }
 }
 
