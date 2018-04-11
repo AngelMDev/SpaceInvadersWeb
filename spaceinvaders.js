@@ -36,6 +36,7 @@ var highScore=0;
 var allScore=[];
 var livesRemaining=3;
 var userName='';
+var top_score="top_score";
 
 
 $(document).ready(function() {
@@ -205,14 +206,27 @@ function gameController() {
 
   document.getElementById("user_score").innerHTML=(userScore);
 
-  if (livesRemaining === 0) {
-    allScores.push(userScore);
-    allScores.sort();
-    highScore = allScores[allScores.length - 1];
-  }
+  // if (livesRemaining === 0) {
+  //   allScores.push(userScore);
+  //   allScores.sort();
+  //   highScore = allScores[allScores.length - 1];
+  // }
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
-
 
   document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
 
+  //need to access top 10 scores
+  var times = 11;
+  for(var i=1; i < times; i++){
+    var topScores = document.getElementById("top_score" + i);
+  }
+}
+
+function toggle_top_ten() {
+  var toggle = document.getElementById("show_top_ten");
+  if (toggle.style.display === "none") {
+      toggle.style.display = "block";
+  } else {
+      toggle.style.display = "none";
+  }
 }
