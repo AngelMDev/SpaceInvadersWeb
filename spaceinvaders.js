@@ -1,4 +1,4 @@
-var alienSprites=["assets/sprites/blue_alien.png","assets/sprite/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
+var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
@@ -7,7 +7,9 @@ var startingPosX=100;
 var horizontalSpacing=75;
 var horizontalOffset=40;
 var verticalSpacing=50;
-var projectileSpeed=60;
+var projectileSpeed=20;
+//time in ms that takes for the projectile to update position (less is faster)
+var projectileMoveFreq=40;
 var userSpeed=20;
 //Enemy move distance
 var moveDistanceX=25;
@@ -19,7 +21,7 @@ var moveTurns=5;
 //Keeps current move turn
 var movesRemaining=moveTurns;
 //Number of projectiles instantiated when the game starts
-var projectileNumber=10;
+var projectileNumber=20;
 var projectiles = new Array();
 reverse=false;
 var playerShip;
@@ -92,8 +94,6 @@ function createGameObject(sprite=""){
   }
   gameObject.appendChild(objectSprite);
   gameObject.style.position = "absolute";
-  gameObject.style.top = "600px";
-  gameObject.style.left = "500px";
   return gameObject;
 }
 
@@ -125,7 +125,6 @@ class Player {
 
   instantiatePlayer(){
     var div = createGameObject(playerSprite);
-    div.style.position = "absolute";
     div.style.top = "600px";
     div.style.left = "500px";
     return div;
@@ -162,12 +161,11 @@ class Projectile {
     this.projectile.style.left = toPixels(parseInt(playerShip.left())+6);
     this.projectile.style.top = toPixels(parseInt(playerShip.top())-20);
     this.projectile.style.visibility ='visible';
-    var moveProjectileInterval=setInterval(this.move(direction),300);
+    var moveProjectileInterval=setInterval(this.move,projectileMoveFreq,direction,this.projectile);
   }
 
-  move(direction){
-    console.log("moving");
-    this.projectile.style.top = toPixels(parseInt(this.projectile.style.top) + projectileSpeed * -direction);
+  move(direction,projectile){
+    projectile.style.top = toPixels(parseInt(projectile.style.top) + projectileSpeed *-direction);
   }
 }
 
