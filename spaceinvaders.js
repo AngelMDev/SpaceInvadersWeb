@@ -1,3 +1,4 @@
+
 var alienSprites=["assets/sprites/blue_alien.png","assets/sprite/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
@@ -28,7 +29,7 @@ var userScore=0;
 var highScore=0;
 var allScore=[];
 var livesRemaining=3;
-var userName=""
+var userName='';
 
 
 $(document).ready(function() {
@@ -92,8 +93,6 @@ function createGameObject(sprite=""){
   }
   gameObject.appendChild(objectSprite);
   gameObject.style.position = "absolute";
-  gameObject.style.top = "600px";
-  gameObject.style.left = "500px";
   return gameObject;
 }
 
