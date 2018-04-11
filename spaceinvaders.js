@@ -14,7 +14,8 @@ var projectileSpeed=6;
 var playerSpeed=1;
 var playerProjectileSpeed=3;
 var enemyProjectileSpeed=2;
-var cannotShoot=false;
+var cannotShoot=true;
+var respawnTime=3000;
 //time in ms that takes for the projectile to update position (less is faster)
 var projectileMoveFreq=40;
 //Enemy move distance
@@ -46,15 +47,17 @@ $(document).ready(function() {
   gameController();
   instantiateEnemies();
   playerShip=new Player(); 
+  
+
 });
 
-function StartEnemies(){
+function startEnemies(){
   console.log("first shot");
   enemyMoveInterval = setInterval(moveEnemies,moveTime); 
-  setInterval(RandomShoot,2000);  
+  setInterval(randomShoot,2000);  
 }
 
-function RandomShoot(){
+function randomShoot(){
   randomEnemy=Math.floor(Math.random()*(enemyShips.length-1));
   console.log("enemy "+randomEnemy+" shoots");
   enemyShips[randomEnemy].shoot(); 
@@ -199,9 +202,21 @@ class Player {
   instantiatePlayer(){
     var div = createGameObject(playerSprite);
     div.style.position = "absolute";
-    div.style.top = "85%";
-    div.style.left = "50%";
+    div.style.visibility = "hidden";
     return div;
+  }
+
+  start(instance=this){
+    console.log("start")
+    cannotShoot=false;
+    instance.playerShip.style.visibility = "visible"
+    instance.playerShip.style.top = "85%";
+    instance.playerShip.style.left = "50%";
+  }
+
+  get alive(){
+    if(instance.playerShip.style.visibility = "visible") return true;
+    return false;
   }
 
   get left() {
@@ -241,6 +256,12 @@ class Player {
     projectile.shoot(1,toPercentage(parseInt(playerShip.left)+0.5),toPercentage(parseInt(playerShip.top)+0.5),playerProjectileSpeed);
     playerShip.canShoot=false;
   }
+
+  destroy(){
+    this.playerShip.style.visibility="hidden";
+    cannotShoot=true;
+    setTimeout(playerShip.start,respawnTime,this);
+  }
 }
 
 class Projectile {
@@ -256,6 +277,11 @@ class Projectile {
     }else {
       this.projectile.style.visibility='hidden';
     }
+  }
+
+  get active(){
+    if(instance.projectile.style.visibility = "visible") return true;
+    return false;
   }
 
   get left() {
@@ -320,8 +346,16 @@ class Projectile {
       if (isColliding(projectile,element)) return;
       })
     }else{
-      if (isColliding(projectile,playerShip)) return;
+      if (isColliding(projectile,playerShip)) {
+        playerShip.destroy();
+        projectile.destroy();
+      }
     }
+  }
+
+  destroy(){
+    this.stop();
+    this.setVisibility(false);
   }
 }
 
@@ -377,8 +411,8 @@ function toggle_top_ten() {
 }
 
 function initiate_game() {
+  playerShip.start();
   StartEnemies();
-  // playerShip.start();
   var display = document.getElementById("initial_buttons")
   display.style.display = "none";
 }
