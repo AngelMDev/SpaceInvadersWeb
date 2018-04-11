@@ -47,8 +47,8 @@ $(document).ready(function() {
   gameController();
   instantiateEnemies();
   playerShip=new Player(); 
-  startEnemies();
-  playerShip.start();
+  
+
 });
 
 function startEnemies(){
@@ -410,4 +410,11 @@ function toggle_top_ten() {
   } else {
       toggle.style.display = "none";
   }
+}
+
+function initiate_game() {
+  playerShip.start();
+  StartEnemies();
+  var display = document.getElementById("initial_buttons")
+  display.style.display = "none";
 }

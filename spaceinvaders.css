@@ -83,7 +83,7 @@ div#initial_buttons {
   
 }
 
-input.start_button {
+button.start_button {
   background-color: lime;
   color: black;
   border: 3px solid white;
@@ -97,7 +97,7 @@ input.start_button {
   margin-top: -7%;
   margin-bottom: 2%;
 }
-input.start_button:hover {
+button.start_button:hover {
   background-color: darkslategray;
   color: white;
 }
