@@ -11,6 +11,9 @@ var horizontalOffset=3;
 var verticalSpacing=8;
 var projectileSpeed=6;
 var userSpeed=1;
+var projectileSpeed=3;
+//time in ms that takes for the projectile to update position (less is faster)
+var projectileMoveFreq=40;
 
 //Enemy move distance
 var moveDistanceX=3;
@@ -164,7 +167,7 @@ class Projectile {
   //moves projectile in the specified direction (1 for up or -1 for down)
   shoot(direction){   
     this.projectile.style.left = toPixels(parseInt(playerShip.left())+0.5);
-    this.projectile.style.top = toPixels(parseInt(playerShip.top())+3.5);
+    this.projectile.style.top = toPixels(parseInt(playerShip.top())+0.5);
     this.projectile.style.visibility ='visible';
     var moveProjectileInterval=setInterval(this.move,projectileMoveFreq,direction,this.projectile);
   }
