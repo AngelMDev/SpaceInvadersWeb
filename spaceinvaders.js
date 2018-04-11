@@ -325,8 +325,6 @@ class Projectile {
   }
 }
 
-
-
 function isColliding(a, b) {  
   return !(
     ((a.y + a.height) < (b.y)) ||
