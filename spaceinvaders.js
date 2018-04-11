@@ -1,17 +1,19 @@
 
-var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
-
+var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"];
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
+var leftBoundary=10;
+var rightBoundary=87;
 var startingPosY=14;
 var startingPosX=12;
 var horizontalSpacing=5;
-var horizontalOffset=3;
+var horizontalOffset=2.5;
 var verticalSpacing=8;
 var projectileSpeed=6;
-var userSpeed=1;
-var projectileSpeed=3;
+var playerSpeed=1;
+var playerProjectileSpeed=3;
+var enemyProjectileSpeed=2;
 var cannotShoot=false;
 //time in ms that takes for the projectile to update position (less is faster)
 var projectileMoveFreq=40;
@@ -42,15 +44,29 @@ $(document).ready(function() {
   instantiateProjectiles(projectileNumber);
   gameController();
   instantiateEnemies();
-  playerShip=new Player();
-  enemyMoveInterval = setInterval(moveEnemies,moveTime);  
+  playerShip=new Player(); 
+  StartEnemies();
 });
+
+function StartEnemies(){
+  console.log("first shot");
+  enemyMoveInterval = setInterval(moveEnemies,moveTime); 
+  setInterval(RandomShoot,2000);  
+}
+
+function RandomShoot(){
+  randomEnemy=Math.floor(Math.random()*(enemyShips.length-1));
+  console.log("enemy "+randomEnemy+" shoots");
+  enemyShips[randomEnemy].shoot(); 
+}
 
 
 document.addEventListener('keydown',function (evt){
   if(evt.which === 37){
+    if(playerShip.left<leftBoundary) return;
     playerShip.moveLeft();
   } else if (evt.which === 39){
+    if(playerShip.left>rightBoundary) return;
     playerShip.moveRight();
   } else if(evt.which== 32){ 
     if (cannotShoot) return; 
@@ -74,21 +90,11 @@ function instantiateEnemies() {
   count = 0;
   for(var j=0;j<4;j++){
     for (var i=0;i<11;i++){
-      var div=createGameObject();
-      //Get first (and only) child of div, which is an img
-      var img=div.children[0];
-      div.style.position = "absolute";
-      div.style.top = toPercentage(startingPosY + verticalSpacing * j);
-      div.classList.add('enemy');
-      div.classList.add('row'+j); //enemy row0
-      div.setAttribute('id',"enemy"+i+''+j) //enemy32
       var offset=0;
       if(j % 2 != 0) offset=horizontalOffset;
-      div.style.left = toPercentage(startingPosX + horizontalSpacing * i + offset);
-      img.src = alienSprites[j];
-      enemyShips[count] = div; 
-      count++;
-      div.style.zIndex = "-1";
+      var enemy=new Enemy(alienSprites[j],toPercentage(startingPosX + horizontalSpacing * i + offset),toPercentage(startingPosY + verticalSpacing * j),i,j);
+      enemyShips[count] = enemy; 
+      count++;    
     }
   } 
 }
@@ -112,15 +118,15 @@ function createGameObject(sprite=""){
 function moveEnemies(){
   enemyShips.forEach(function(enemy){
    if(movesRemaining>0){
-    currentPosX=parseInt(enemy.style.left);
+    currentPosX=parseInt(enemy.left);
     if(!reverse){        
-        enemy.style.left=toPercentage(currentPosX+moveDistanceX);
+        enemy.left=toPercentage(currentPosX+moveDistanceX);
       } else {
-        enemy.style.left=toPercentage(currentPosX-moveDistanceX);
+        enemy.left=toPercentage(currentPosX-moveDistanceX);
       }
     }else{
-      currentPosY=parseInt(enemy.style.top);
-      enemy.style.top=toPercentage(currentPosY+moveDistanceY);
+      currentPosY=parseInt(enemy.top);
+      enemy.top=toPercentage(currentPosY+moveDistanceY);
     }
   });
   movesRemaining--;
@@ -130,8 +136,63 @@ function moveEnemies(){
   }
 }
 
+class Enemy {
+  constructor(sprite,xPos,yPos,col,row) {
+    this.enemyShip=this.instantiateEnemy(sprite,xPos,yPos,col,row);
+  }
+
+  get left() {
+    return this.enemyShip.style.left;
+  }
+
+  get x() {
+    return this.enemyShip.getBoundingClientRect().x;
+  }
+
+  get y(){
+    return this.enemyShip.getBoundingClientRect().y;
+  }
+
+  set left(value) {
+    this.enemyShip.style.left=value;
+  }
+
+  get top() {
+    return this.enemyShip.style.top;
+  }
+
+  set top(value) {
+    this.enemyShip.style.top=value;
+  }
+
+  get width(){
+    return this.enemyShip.offsetWidth;
+  }
+
+  get height(){
+    return this.enemyShip.offsetHeight;
+  }
+
+  instantiateEnemy(sprite,xPos,yPos,col,row){
+    var enemyShip = createGameObject(sprite);
+    enemyShip.style.position = "absolute";
+    enemyShip.style.top = yPos;
+    enemyShip.style.left = xPos;
+    enemyShip.style.zIndex = "-1";
+    enemyShip.classList.add('enemy');
+    enemyShip.classList.add('row'+row); //enemy row0
+    enemyShip.setAttribute('id',"enemy"+col+''+row) //enemy32
+    return enemyShip;
+  }
+
+  shoot(){ 
+    var projectile=projectiles.pop();
+    projectile.shoot(-1,this.left,this.top,enemyProjectileSpeed);  
+  }
+}
+
 class Player {
-  constructor(){
+  constructor() {
     this.playerShip=this.instantiatePlayer();
   }
 
@@ -143,26 +204,41 @@ class Player {
     return div;
   }
 
-  left() {
-    return this.playerShip.style.left;
+  get left() {
+    return parseInt(this.playerShip.style.left);
   }
 
-  top(){
-    return this.playerShip.style.top;
+  get x() {
+    return this.playerShip.getBoundingClientRect().x;
+  }
+
+  get y() {
+    return this.playerShip.getBoundingClientRect().y;
+  }
+
+  get top(){
+    return parseInt(this.playerShip.style.top);
+  }
+
+  get width(){
+    return this.playerShip.offsetWidth;
+  }
+
+  get height(){
+    return this.playerShip.offsetHeight;
   }
 
   moveRight(){
-    this.playerShip.style.left = toPercentage(parseInt(this.playerShip.style.left) + userSpeed);
+    this.playerShip.style.left = toPercentage(parseInt(this.playerShip.style.left) + playerSpeed);
   }
 
   moveLeft(){
-    this.playerShip.style.left = toPercentage(parseInt(this.playerShip.style.left) - userSpeed);
+    this.playerShip.style.left = toPercentage(parseInt(this.playerShip.style.left) - playerSpeed);
   }
 
-  shoot(){
-    
+  shoot(){ 
     var projectile=projectiles.pop();
-    projectile.shoot(1);
+    projectile.shoot(1,toPercentage(parseInt(playerShip.left)+0.5),toPercentage(parseInt(playerShip.top)+0.5),playerProjectileSpeed);
     playerShip.canShoot=false;
   }
 }
@@ -171,18 +247,93 @@ class Projectile {
   constructor(){
     this.projectile=createGameObject(projectileSprite);
     this.projectile.style.visibility="hidden";
-  }
-  //moves projectile in the specified direction (1 for up or -1 for down)
-  shoot(direction){   
-    this.projectile.style.left = toPercentage(parseInt(playerShip.left())+0.5);
-    this.projectile.style.top = toPercentage(parseInt(playerShip.top())+0.5);
-    this.projectile.style.visibility ='visible';
-    var moveProjectileInterval=setInterval(this.move,projectileMoveFreq,direction,this.projectile);
+    this.moveProjectileInterval;
   }
 
-  move(direction,projectile){
-    projectile.style.top = toPercentage(parseInt(projectile.style.top) + projectileSpeed *-direction);
+  setVisibility(visible){
+    if(visible) {
+      this.projectile.style.visibility='visible';
+    }else {
+      this.projectile.style.visibility='hidden';
+    }
   }
+
+  get left() {
+    return this.projectile.style.left;
+  }
+
+  set left(value){
+    this.projectile.style.left=value;
+  }
+  get top() {
+    return this.projectile.style.top;
+  }
+
+  get x() {
+    return this.projectile.getBoundingClientRect().x;
+  }
+  
+  get y(){
+    return this.projectile.getBoundingClientRect().y;
+  }
+
+  set top(value){
+    this.projectile.style.top=value;
+  } 
+
+  get width(){
+    return this.projectile.offsetWidth;
+  }
+
+  get height(){
+    return this.projectile.offsetHeight;
+  }
+
+  stop(){
+    clearInterval(this.moveProjectileInterval);
+  }
+
+  //moves projectile in the specified direction (1 for up or -1 for down) from the x,y position specified
+  shoot(direction,xPos,yPos,speed){   
+    this.projectile.style.left = xPos;//
+    this.projectile.style.top = yPos; //
+    this.projectile.style.visibility ='visible';
+    this.moveProjectileInterval=setInterval(this.move,projectileMoveFreq,direction,this,speed);
+    setTimeout(this.recycleProjectile,2000,this);
+  }
+
+  move(direction,projectile,speed){
+    projectile.top = toPercentage(parseInt(projectile.top) + speed *-direction); 
+    //direction is passed so the function knows if it was shot by a player or an enemy
+    projectile.detectCollision(direction,projectile);
+  }
+
+  recycleProjectile(projectile){
+    projectile.setVisibility(false);
+    projectile.stop();
+    projectiles.push(projectile);    
+  }
+
+  detectCollision(direction,projectile){
+    if(direction>0){
+      enemyShips.forEach(function(element){
+      if (isColliding(projectile,element)) return;
+      })
+    }else{
+      if (isColliding(projectile,playerShip)) return;
+    }
+  }
+}
+
+
+
+function isColliding(a, b) {  
+  return !(
+    ((a.y + a.height) < (b.y)) ||
+    (a.y > (b.y + b.height)) ||
+    ((a.x + a.width) < b.x) ||
+    (a.x > (b.x + b.width))
+);
 }
 
 
@@ -202,7 +353,6 @@ function gameController() {
   //   break
   // }
   document.getElementById("show_score").innerHTML=("Your score: " + userScore); 
-
   document.getElementById("user_score").innerHTML=(userScore);
 
   if (livesRemaining === 0) {
@@ -211,8 +361,5 @@ function gameController() {
     highScore = allScores[allScores.length - 1];
   }
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
-
-
   document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
-
 }
