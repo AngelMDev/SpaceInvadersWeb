@@ -55,15 +55,72 @@ body, html {
   visibility: hidden;
 }
 
-input.final_button {
+input.save_button {
   background-color: lime;
   color: black;
   border: 3px solid white;
   font-family: 'Epson Pixeled Regular', normal, normal;
   font-weight: bold;
 }
-input.final_button:hover {
+input.save_button:hover {
   background-color: darkslategray;
   color: white;
 }
 
+button.restart_button {
+  background-color: lime;
+  color: black;
+  border: 3px solid white;
+  font-family: 'Epson Pixeled Regular', normal, normal;
+  font-weight: bold;
+}
+button.restart_button:hover {
+  background-color: darkslategray;
+  color: white;
+}
+
+div#initial_buttons {
+  
+}
+
+input.start_button {
+  background-color: lime;
+  color: black;
+  border: 3px solid white;
+  font-family: 'Epson Pixeled Regular', normal, normal;
+  font-weight: bold;
+  font-size: 18px;
+  width: 20%;
+  margin-left: 40%;
+  margin-right: 40%;
+  height: 10%;
+  margin-top: -7%;
+  margin-bottom: 2%;
+}
+input.start_button:hover {
+  background-color: darkslategray;
+  color: white;
+}
+
+button.toggle_top_scores {
+  background-color: lime;
+  color: black;
+  border: 3px solid white;
+  font-family: 'Epson Pixeled Regular', normal, normal;
+  font-weight: bold;
+  font-size: 18px;
+  width: 20%;
+  margin-left: 40%;
+  margin-right: 40%;
+  height: 10%;
+}
+button.toggle_top_scores:hover {
+  background-color: darkslategray;
+  color: white;
+}
+
+div#show_top_ten {
+  color: white;
+  margin-left: 40%;
+  display: none;
+}
