@@ -1,18 +1,18 @@
 
-var alienSprites=["assets/sprites/blue_alien.png","assets/sprite/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
+var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"]
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
-var startingPosY=80;
-var startingPosX=100;
-var horizontalSpacing=75;
-var horizontalOffset=40;
-var verticalSpacing=50;
-var projectileSpeed=60;
-var userSpeed=20;
+var startingPosY=14;
+var startingPosX=10;
+var horizontalSpacing=5;
+var horizontalOffset=3;
+var verticalSpacing=8;
+var projectileSpeed=6;
+var userSpeed=1;
 //Enemy move distance
-var moveDistanceX=25;
-var moveDistanceY=20;
+var moveDistanceX=3;
+var moveDistanceY=5;
 //Time in ms that it takes for the enemy to move to the right/left
 var moveTime=2000;
 //Number of times that it will move to the left/right before moving down and reversing direction
@@ -25,6 +25,7 @@ var projectiles = new Array();
 reverse=false;
 var playerShip;
 var enemyShips=[];
+//game controller vars
 var userScore=0;
 var highScore=0;
 var allScore=[];
@@ -81,7 +82,7 @@ function instantiateEnemies() {
 }
 
 function toPixels(integer){
-  return integer+"px";
+  return integer+"%";
 }
 
 function createGameObject(sprite=""){
@@ -125,8 +126,8 @@ class Player {
   instantiatePlayer(){
     var div = createGameObject(playerSprite);
     div.style.position = "absolute";
-    div.style.top = "600px";
-    div.style.left = "500px";
+    div.style.top = "85%";
+    div.style.left = "50%";
     return div;
   }
 
@@ -158,8 +159,8 @@ class Projectile {
   }
   //moves projectile in the specified direction (1 for up or -1 for down)
   shoot(direction){   
-    this.projectile.style.left = toPixels(parseInt(playerShip.left())+6);
-    this.projectile.style.top = toPixels(parseInt(playerShip.top())-20);
+    this.projectile.style.left = toPixels(parseInt(playerShip.left())+0.5);
+    this.projectile.style.top = toPixels(parseInt(playerShip.top())+3.5);
     this.projectile.style.visibility ='visible';
     var moveProjectileInterval=setInterval(this.move(direction),300);
   }
