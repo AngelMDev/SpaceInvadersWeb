@@ -1,5 +1,5 @@
 
-var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"];
+var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/green_alien.png","assets/sprites/blue_alien2.png","assets/sprites/red_alien.png"];
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
@@ -38,7 +38,8 @@ var userScore=0;
 var highScore=0;
 var livesRemaining=3;
 var userName='';
-var top_score="top_score";
+var topScore="top_score";
+
 
 
 $(document).ready(function() {
@@ -59,7 +60,12 @@ function startEnemies(){
 function randomShoot(){
   randomEnemy=Math.floor(Math.random()*(enemyShips.length-1));
   console.log("enemy "+randomEnemy+" shoots");
-  enemyShips[randomEnemy].shoot(); 
+  if(enemyShips[randomEnemy].alive){
+      
+      enemyShips[randomEnemy].shoot(); 
+  }else{
+    randomShoot();
+  }
 }
 
 
@@ -114,6 +120,7 @@ function createGameObject(sprite=""){
   }
   gameObject.appendChild(objectSprite);
   gameObject.style.position = "absolute";
+  gameObject.style.visibility = "visible"
   return gameObject;
 }
 
@@ -141,6 +148,11 @@ function moveEnemies(){
 class Enemy {
   constructor(sprite,xPos,yPos,col,row) {
     this.enemyShip=this.instantiateEnemy(sprite,xPos,yPos,col,row);
+  }
+
+  get alive(){
+    debugger
+    return this.enemyShip.style.visibility === "visible";  
   }
 
   get left() {
@@ -191,6 +203,11 @@ class Enemy {
     var projectile=projectiles.pop();
     projectile.shoot(-1,this.left,this.top,enemyProjectileSpeed);  
   }
+
+  destroy(){
+    this.enemyShip.style.visibility="hidden";
+
+  }
 }
 
 class Player {
@@ -214,7 +231,7 @@ class Player {
   }
 
   get alive(){
-    if(instance.playerShip.style.visibility = "visible") return true;
+    if(this.playerShip.style.visibility === "visible") return true;
     return false;
   }
 
@@ -279,7 +296,7 @@ class Projectile {
   }
 
   get active(){
-    if(instance.projectile.style.visibility = "visible") return true;
+    if(this.projectile.style.visibility === "visible") return true;
     return false;
   }
 
@@ -342,10 +359,13 @@ class Projectile {
   detectCollision(direction,projectile){
     if(direction>0){
       enemyShips.forEach(function(element){
-      if (isColliding(projectile,element)) return;
+      if (isColliding(projectile,element)&&element.alive&&projectile.active) {
+        element.destroy();
+        projectile.destroy();
+      }
       })
     }else{
-      if (isColliding(projectile,playerShip)) {
+      if (isColliding(projectile,playerShip)&&playerShip.alive&&projectile.active) {
         playerShip.destroy();
         projectile.destroy();
       }
@@ -367,24 +387,28 @@ function isColliding(a, b) {
 );
 }
 
+class gameController {  
+  constructor(startingLives){
+    this.startingLives=startingLives;
+  }
 
-function gameController() { 
-  // switch(div.className){
-  //   case "row0":
-  //     userScore+=topRowScore
-  //   break
-  //   case "row1":
-  //     userScore+=secondRowScore
-  //   break
-  //   case "row2":
-  //     userScore+=thirdRowScore
-  //   break
-  //   case "row3":
-  //     userScore+=bottomRowScore
-  //   break
-  // }
-
-  //live scoreboard
+  addScore(row){
+  switch(div.className){
+      case "row0":
+        userScore+=topRowScore
+      break
+      case "row1":
+        userScore+=secondRowScore
+      break
+      case "row2":
+        userScore+=thirdRowScore
+      break
+      case "row3":
+        userScore+=bottomRowScore
+      break;
+    }
+    
+  UI {
   userScore = document.getElementById("user_score");
   document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
@@ -398,8 +422,8 @@ function gameController() {
 
     //need to access top 10 scores
     var times = 11;
-    for(var i=1; i < times; i++){
-      var topScores = document.getElementById("top_score" + i);
+    //for(var i=1; i < times; i++){
+     //var topScores = document.getElementById("top_score" + i);
     }
   }
 }
