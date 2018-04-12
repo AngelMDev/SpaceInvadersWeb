@@ -1,5 +1,5 @@
 
-var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/blue_alien2.png","assets/sprites/green_alien.png","assets/sprites/red_alien.png"];
+var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/green_alien.png","assets/sprites/blue_alien2.png","assets/sprites/red_alien.png"];
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var board; 
@@ -39,7 +39,8 @@ var highScore=0;
 var allScore=[];
 var livesRemaining=3;
 var userName='';
-var top_score="top_score";
+var topScore="top_score";
+
 
 
 $(document).ready(function() {
@@ -60,7 +61,12 @@ function startEnemies(){
 function randomShoot(){
   randomEnemy=Math.floor(Math.random()*(enemyShips.length-1));
   console.log("enemy "+randomEnemy+" shoots");
-  enemyShips[randomEnemy].shoot(); 
+  if(enemyShips[randomEnemy].alive){
+      
+      enemyShips[randomEnemy].shoot(); 
+  }else{
+    randomShoot();
+  }
 }
 
 
@@ -115,6 +121,7 @@ function createGameObject(sprite=""){
   }
   gameObject.appendChild(objectSprite);
   gameObject.style.position = "absolute";
+  gameObject.style.visibility = "visible"
   return gameObject;
 }
 
@@ -142,6 +149,11 @@ function moveEnemies(){
 class Enemy {
   constructor(sprite,xPos,yPos,col,row) {
     this.enemyShip=this.instantiateEnemy(sprite,xPos,yPos,col,row);
+  }
+
+  get alive(){
+    debugger
+    return this.enemyShip.style.visibility === "visible";  
   }
 
   get left() {
@@ -192,6 +204,11 @@ class Enemy {
     var projectile=projectiles.pop();
     projectile.shoot(-1,this.left,this.top,enemyProjectileSpeed);  
   }
+
+  destroy(){
+    this.enemyShip.style.visibility="hidden";
+
+  }
 }
 
 class Player {
@@ -215,7 +232,7 @@ class Player {
   }
 
   get alive(){
-    if(instance.playerShip.style.visibility = "visible") return true;
+    if(this.playerShip.style.visibility === "visible") return true;
     return false;
   }
 
@@ -280,7 +297,7 @@ class Projectile {
   }
 
   get active(){
-    if(instance.projectile.style.visibility = "visible") return true;
+    if(this.projectile.style.visibility === "visible") return true;
     return false;
   }
 
@@ -343,10 +360,13 @@ class Projectile {
   detectCollision(direction,projectile){
     if(direction>0){
       enemyShips.forEach(function(element){
-      if (isColliding(projectile,element)) return;
+      if (isColliding(projectile,element)&&element.alive&&projectile.active) {
+        element.destroy();
+        projectile.destroy();
+      }
       })
     }else{
-      if (isColliding(projectile,playerShip)) {
+      if (isColliding(projectile,playerShip)&&playerShip.alive&&projectile.active) {
         playerShip.destroy();
         projectile.destroy();
       }
@@ -360,7 +380,6 @@ class Projectile {
 }
 
 
-
 function isColliding(a, b) {  
   return !(
     ((a.y + a.height) < (b.y)) ||
@@ -371,37 +390,44 @@ function isColliding(a, b) {
 }
 
 
-function gameController() {  
-  // switch(div.className){
-  //   case "row0":
-  //     userScore+=topRowScore
-  //   break
-  //   case "row1":
-  //     userScore+=secondRowScore
-  //   break
-  //   case "row2":
-  //     userScore+=thirdRowScore
-  //   break
-  //   case "row3":
-  //     userScore+=bottomRowScore
-  //   break
-  // }
-  document.getElementById("show_score").innerHTML=("Your score: " + userScore); 
-  document.getElementById("user_score").innerHTML=(userScore);
-
-  // if (livesRemaining === 0) {
-  //   allScores.push(userScore);
-  //   allScores.sort();
-  //   highScore = allScores[allScores.length - 1];
-  // }
-  document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
-  document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
-
-  //need to access top 10 scores
-  var times = 11;
-  for(var i=1; i < times; i++){
-    var topScores = document.getElementById("top_score" + i);
+class gameController {  
+  constructor(startingLives){
+    this.startingLives=startingLives;
   }
+
+  addScore(row){
+  switch(div.className){
+      case "row0":
+        userScore+=topRowScore
+      break
+      case "row1":
+        userScore+=secondRowScore
+      break
+      case "row2":
+        userScore+=thirdRowScore
+      break
+      case "row3":
+        userScore+=bottomRowScore
+      break
+    }
+  }
+  // 
+  // document.getElementById("show_score").innerHTML=("Your score: " + userScore); 
+  // document.getElementById("user_score").innerHTML=(userScore);
+
+  // // if (livesRemaining === 0) {
+  // //   allScores.push(userScore);
+  // //   allScores.sort();
+  // //   highScore = allScores[allScores.length - 1];
+  // // }
+  // document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
+  // document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
+
+  // //need to access top 10 scores
+  // var times = 11;
+  // for(var i=1; i < times; i++){
+  //   var topScores = document.getElementById("top_score" + i);
+  // }
 }
 function toggle_top_ten() {
   var toggle = document.getElementById("show_top_ten");
@@ -414,7 +440,7 @@ function toggle_top_ten() {
 
 function initiate_game() {
   playerShip.start();
-  StartEnemies();
+  startEnemies();
   var display = document.getElementById("initial_buttons")
   display.style.display = "none";
 }
