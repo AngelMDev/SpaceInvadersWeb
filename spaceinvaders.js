@@ -39,15 +39,20 @@ var highScore=0;
 var livesRemaining=3;
 var userName='';
 var topScore="top_score";
+var gameController;
+//scores
+var topRowScore=50;
+var secondRowScore=30;
+var thirdRowScore=20;
+var bottomRowScore=10;
 
 
 
 $(document).ready(function() {
   instantiateProjectiles(projectileNumber);
-  gameController();
   instantiateEnemies();
   playerShip=new Player(); 
-  
+  gameController=new GameController(livesRemaining);
 
 });
 
@@ -150,8 +155,7 @@ class Enemy {
     this.enemyShip=this.instantiateEnemy(sprite,xPos,yPos,col,row);
   }
 
-  get alive(){
-    debugger
+  get alive(){    
     return this.enemyShip.style.visibility === "visible";  
   }
 
@@ -206,7 +210,7 @@ class Enemy {
 
   destroy(){
     this.enemyShip.style.visibility="hidden";
-
+    gameController.addScore(this.enemyShip.className);
   }
 }
 
@@ -387,30 +391,30 @@ function isColliding(a, b) {
 );
 }
 
-class gameController {  
+class GameController {  
   constructor(startingLives){
     this.startingLives=startingLives;
+    this.UI();
   }
 
   addScore(row){
-  switch(div.className){
-      case "row0":
+  switch(row){
+      case "enemy row0":
         userScore+=topRowScore
       break
-      case "row1":
+      case "enemy row1":
         userScore+=secondRowScore
       break
-      case "row2":
+      case "enemy row2":
         userScore+=thirdRowScore
       break
-      case "row3":
+      case "enemy row3":
         userScore+=bottomRowScore
       break;
     }
   }
     
   UI() {
-  userScore = document.getElementById("user_score");
   document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
   document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
