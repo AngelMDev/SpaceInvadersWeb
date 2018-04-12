@@ -40,6 +40,11 @@ var livesRemaining=3;
 var userName='';
 var topScore="top_score";
 var gameController;
+//scores
+var topRowScore=50;
+var secondRowScore=30;
+var thirdRowScore=20;
+var bottomRowScore=10;
 
 
 $(document).ready(function() {
@@ -148,7 +153,7 @@ class Enemy {
     this.enemyShip=this.instantiateEnemy(sprite,xPos,yPos,col,row);
   }
 
-  get alive(){
+  get alive(){    
     return this.enemyShip.style.visibility === "visible";  
   }
 
@@ -203,7 +208,7 @@ class Enemy {
 
   destroy(){
     this.enemyShip.style.visibility="hidden";
-
+    gameController.addScore(this.enemyShip.className);
   }
 }
 
@@ -391,21 +396,22 @@ class GameController {
   }
 
   addScore(row){
-  switch(div.className){
-      case "row0":
+  switch(row){
+      case "enemy row0":
         userScore+=topRowScore
       break
-      case "row1":
+      case "enemy row1":
         userScore+=secondRowScore
       break
-      case "row2":
+      case "enemy row2":
         userScore+=thirdRowScore
       break
-      case "row3":
+      case "enemy row3":
         userScore+=bottomRowScore
       break;
     }
   }
+
   UI() {
   document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
