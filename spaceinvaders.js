@@ -456,7 +456,22 @@ class GameController {
   //end game form
     if (livesRemaining === 0) {
       stopEnemies();
-      var show = document.getElementById("top_10");
+      var show = document.getElementById("top_10_button");
+      show.style.visibility = "visible";
+      var finalScore = userScore;
+      var displayForm = document.getElementById("end_game_display");
+      displayForm.style.visibility = "visible";
+      document.getElementById("user_score").innerHTML=("Game over! Your score was " + finalScore);
+      //var userName = document.getElementById("final_form").submit();
+      //need to access top 10 scores
+      // var times = 11;
+      // for(var i=1; i < times; i++){
+      // var topScores = document.getElementById("top_score" + i);
+      // }
+    }
+    if (enemyShips.length === 0) {
+      stopEnemies();
+      var show = document.getElementById("top_10_button");
       show.style.visibility = "visible";
       var finalScore = userScore;
       var displayForm = document.getElementById("end_game_display");
@@ -479,16 +494,16 @@ class Level{
 }
 
   function toggleTopTen() {
-    var toggle = document.getElementById("show_top_ten");
-    if (toggle.style.display === "none") {
-        toggle.style.display = "block";
-    } else {
+    var toggle = document.getElementById("show_top_ten_list");
+    if (toggle.style.display === "block") {
         toggle.style.display = "none";
+    } else {
+        toggle.style.display = "block";
     }
 }
 
 function toggleSound() {
-  var muteToggle = document.getElementById("toggle_sound");
+  var muteToggle = document.getElementById("toggle_sound_button");
     if (soundOn){
     muteToggle.innerHTML="Turn Sound On";
     } else {
@@ -502,12 +517,13 @@ function initiateGame() {
   startEnemies();
   var hide = document.getElementById("initiate_button");
   hide.style.visibility = "hidden";
-  var hide2 = document.getElementById("top_10");
+  var hide2 = document.getElementById("top_10_button");
   hide2.style.visibility = "hidden";
-  var hide3 = document.getElementById("toggle_sound");
+  var hide3 = document.getElementById("toggle_sound_button");
   hide3.style.visibility = "hidden";
+  var hide4 = document.getElementById("show_top_ten_list");
+  hide4.style.display = "none";
 }
-
 function reload() {
   document.getElementById("restart_button");
   document.location.reload(true);

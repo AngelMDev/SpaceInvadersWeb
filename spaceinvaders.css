@@ -124,7 +124,7 @@ button.toggle_sound_class:hover {
   color: white;
 }
 
-button.toggle_top_scores {
+button.toggle_top_scores_button {
   background-color: lime;
   color: black;
   border: 3px solid white;
@@ -136,11 +136,11 @@ button.toggle_top_scores {
   margin-right: 40%;
   height: 10%;
 }
-button.toggle_top_scores:hover {
+button.toggle_top_scores_button:hover {
   background-color: darkslategray;
   color: white;
 }
-div#show_top_ten {
+div#show_top_ten_list {
   color: white;
   margin-left: 40%;
   display: none;
