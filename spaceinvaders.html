@@ -19,18 +19,22 @@
     <form id="final_form" method="get">
       <span id="user_score">  </span> <br>
       Choose a Username: <input type="text" id="user_name"><br>
-      <input type="submit" value="Submit" class="save_button">
-      <button type="reset" value="Reset" class="restart_button">Restart</button>
+      <button type="submit" class="save_button" id="save_button">Submit</button>
+      <button onclick="reload()" class="restart_button" id="restart_button">Restart</button>
       <br>
     </form>
   </div>
 
-  <div id="initial_buttons">
+  <div id="initiate_button">
     <button onclick="initiateGame()" class="start_button"> Start Game </button>
     <br>
   </div>
+  <button onclick="toggleSound()" class="toggle_sound_class" id="toggle_sound"> Turn Sound Off </button>
+  <br>
+  <br>
+  <br>
   <div id="top_10">
-    <button onclick="toggle_top_ten()" class="toggle_top_scores"> Top 10 scores </button>
+      <button onclick="toggleTopTen()" class="toggle_top_scores"> Top 10 scores </button>
   </div>
 
   <div id="show_top_ten">
