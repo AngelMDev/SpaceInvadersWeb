@@ -50,7 +50,8 @@ body, html {
   display: inline-block;
   background-color: darkslateblue;
   border: 2px solid lime;
-  margin-left: 30%;
+  margin-left: 32.5%;
+  margin-right: 32.5%;
   z-index: 1;
 }
 
@@ -105,7 +106,7 @@ button.start_button:hover {
   color: white;
 }
 
-button.toggle_top_scores1 {
+button.toggle_top_scores {
   background-color: lime;
   color: black;
   border: 3px solid white;
@@ -117,35 +118,11 @@ button.toggle_top_scores1 {
   margin-right: 40%;
   height: 10%;
 }
-button.toggle_top_scores1:hover {
+button.toggle_top_scores:hover {
   background-color: darkslategray;
   color: white;
 }
-
-div#show_top_ten1 {
-  color: white;
-  margin-left: 40%;
-  display: none;
-}
-
-button.toggle_top_scores2 {
-  background-color: lime;
-  color: black;
-  border: 3px solid white;
-  font-family: 'Epson Pixeled Regular', normal, normal;
-  font-weight: bold;
-  font-size: 18px;
-  width: 20%;
-  margin-left: 40%;
-  margin-right: 40%;
-  height: 10%;
-}
-button.toggle_top_scores2:hover {
-  background-color: darkslategray;
-  color: white;
-}
-
-div#show_top_ten2 {
+div#show_top_ten {
   color: white;
   margin-left: 40%;
   display: none;
