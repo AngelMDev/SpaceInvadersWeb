@@ -1,6 +1,6 @@
 
 //code.iamkate.com
-//function Queue(){var a=[],b=0;this.getLength=function(){return a.length-b};this.isEmpty=function(){return 0==a.length};this.enqueue=function(b){a.push(b)};this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};this.peek=function(){return 0<a.length?a[b]:void 0}};
+function Queue(){var a=[],b=0;this.getLength=function(){return a.length-b};this.isEmpty=function(){return 0==a.length};this.enqueue=function(b){a.push(b)};this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};this.peek=function(){return 0<a.length?a[b]:void 0}};
 var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/green_alien.png","assets/sprites/blue_alien2.png","assets/sprites/red_alien.png"];
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
@@ -17,7 +17,7 @@ var startingPosX=12;
 var horizontalSpacing=5;
 var horizontalOffset=2.5;
 var verticalSpacing=8;
-var playerSpeed=1;
+var playerSpeed=2;
 var playerProjectileSpeed=1.5;
 var enemyProjectileSpeed=1;
 var cannotShoot=true;
@@ -39,7 +39,7 @@ var shootTime=1800;
 var movesRemaining=moveTurns;
 //Number of projectiles instantiated when the game starts
 var projectileNumber=15;
-var projectiles = new Array();
+var projectiles = new Queue();
 reverse=false;
 var playerShip;
 var enemyShips=[];
@@ -100,7 +100,7 @@ document.addEventListener('keydown',function (evt){
 
 function instantiateProjectiles(projectileNumber){
   for(var i=0;i<projectileNumber;i++){
-    projectiles.push(new Projectile());
+    projectiles.enqueue(new Projectile());
   }
 }
 
@@ -226,7 +226,7 @@ class Enemy {
   }
 
   shoot(){ 
-    var projectile=projectiles.shift();
+    var projectile=projectiles.dequeue();
     projectile.shoot(-1,this.left,this.top,enemyProjectileSpeed);  
   }
 
@@ -296,9 +296,10 @@ class Player {
 
   shoot(){ 
     if(this.alive){
-      var projectile=projectiles.shift();
+      var projectile=projectiles.dequeue();
       projectile.shoot(1,toPercentage(parseFloat(playerShip.left)+0.5),toPercentage(parseFloat(playerShip.top)+0.5),playerProjectileSpeed);
       cannotShoot=true;
+      
     }
   }
 
@@ -371,20 +372,19 @@ class Projectile {
     this.projectile.style.top = yPos; //
     this.projectile.style.visibility ='visible';
     this.moveProjectileInterval=setInterval(this.move,projectileMoveFreq,direction,this,speed);
-    setTimeout(this.recycleProjectile,2000,this);
   }
 
   move(direction,projectile,speed){
     projectile.top = toPercentage(parseFloat(projectile.top) + speed *-direction); 
     //direction is passed so the function knows if it was shot by a player or an enemy
     projectile.detectCollision(direction,projectile);
-
   }
 
   recycleProjectile(projectile){ 
+    console.log(projectiles.getLength());
     projectile.setVisibility(false);
     projectile.stop();
-    projectiles.push(projectile);   
+    projectiles.enqueue(projectile);   
   }
 
   detectCollision(direction,projectile){
@@ -392,27 +392,26 @@ class Projectile {
       enemyShips.forEach(function(element){
       if (isColliding(projectile,element)&&element.alive&&projectile.active) {
         element.destroy();
-        projectile.destroy();
+        projectile.recycleProjectile(projectile);
         if (direction>0){
           cannotShoot=false;
         }
       }
       })
       if(parseFloat(projectile.top)<1){
-        projectile.recycleProjectile(projectile);
         cannotShoot=false;
+        this.recycleProjectile(projectile)
       }
     }else{
       if (isColliding(projectile,playerShip)&&playerShip.alive&&projectile.active) {
         playerShip.destroy();
-        projectile.destroy();
+        projectile.recycleProjectile();
+      }
+      if(parseFloat(projectile.top)>99){
+        console.log(projectile.top)
+        this.recycleProjectile(projectile)
       }
     }
-  }
-
-  destroy(){
-    this.stop();
-    this.setVisibility(false);
   }
 }
 
