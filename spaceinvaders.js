@@ -39,16 +39,14 @@ var highScore=0;
 var livesRemaining=3;
 var userName='';
 var topScore="top_score";
-
+var gameController;
 
 
 $(document).ready(function() {
   instantiateProjectiles(projectileNumber);
-  gameController();
   instantiateEnemies();
   playerShip=new Player(); 
-  
-
+  gameController=new GameController(livesRemaining);
 });
 
 function startEnemies(){
@@ -151,7 +149,6 @@ class Enemy {
   }
 
   get alive(){
-    debugger
     return this.enemyShip.style.visibility === "visible";  
   }
 
@@ -387,9 +384,10 @@ function isColliding(a, b) {
 );
 }
 
-class gameController {  
+class GameController {  
   constructor(startingLives){
     this.startingLives=startingLives;
+    this.UI();
   }
 
   addScore(row){
@@ -407,9 +405,8 @@ class gameController {
         userScore+=bottomRowScore
       break;
     }
-    
-  UI {
-  userScore = document.getElementById("user_score");
+  }
+  UI() {
   document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
   document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
