@@ -407,8 +407,9 @@ class gameController {
         userScore+=bottomRowScore
       break;
     }
+  }
     
-  UI {
+  UI() {
   userScore = document.getElementById("user_score");
   document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
