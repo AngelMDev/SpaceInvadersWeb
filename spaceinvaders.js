@@ -19,12 +19,12 @@ var respawnTime=3000;
 //time in ms that takes for the projectile to update position (less is faster)
 var projectileMoveFreq=40;
 //Enemy move distance
-var moveDistanceX=3;
-var moveDistanceY=5;
+var moveDistanceX=1;
+var moveDistanceY=3;
 //Time in ms that it takes for the enemy to move to the right/left
-var moveTime=2000;
+var moveTime=600;
 //Number of times that it will move to the left/right before moving down and reversing direction
-var moveTurns=6;
+var moveTurns=25;
 //Keeps current move turn
 var movesRemaining=moveTurns;
 //Number of projectiles instantiated when the game starts
@@ -36,7 +36,7 @@ var enemyShips=[];
 //game controller vars
 var userScore=0;
 var highScore=0;
-var livesRemaining=3;
+var livesRemaining=1;
 var userName='';
 var topScore="top_score";
 var gameController;
@@ -70,7 +70,6 @@ function randomShoot(){
     randomShoot();
   }
 }
-
 
 document.addEventListener('keydown',function (evt){
   if(evt.which === 37){
@@ -279,6 +278,8 @@ class Player {
     this.playerShip.style.visibility="hidden";
     cannotShoot=true;
     setTimeout(playerShip.start,respawnTime,this);
+    livesRemaining--;
+    gameController.UI();
   }
 }
 
@@ -410,49 +411,46 @@ class GameController {
         userScore+=bottomRowScore
       break;
     }
+    this.UI();
   }
 
   UI() {
   document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
-  document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
+  document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By " + userName);
   document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
 
   //end game form
-  if (livesRemaining === 0) {
-    var displayForm = document.getElementById("end_game_display");
-    displayForm.style.visibility = "visible";
-    var userName = document.getElementById("final_form").sumbit();
-
-    //need to access top 10 scores
-    var times = 11;
-    //for(var i=1; i < times; i++){
-     //var topScores = document.getElementById("top_score" + i);
+    if (livesRemaining === 0) {
+      var show = document.getElementById("top_10");
+      show.style.visibility = "visible";
+      var finalScore = userScore;
+      var displayForm = document.getElementById("end_game_display");
+      displayForm.style.visibility = "visible";
+      document.getElementById("user_score").innerHTML=("Game over! Your score was " + finalScore);
+      var userName = document.getElementById("final_form").sumbit();
+      //need to access top 10 scores
+      // var times = 11;
+      // for(var i=1; i < times; i++){
+      // var topScores = document.getElementById("top_score" + i);
+      // }
     }
   }
 }
 
-  function toggle_top_ten1() {
-    var toggle = document.getElementById("show_top_ten1");
-    if (toggle.style.display === "none") {
-        toggle.style.display = "block";
-    } else {
-        toggle.style.display = "none";
-    }
+function toggle_top_ten() {
+  var toggle = document.getElementById("show_top_ten");
+  if (toggle.style.display === "none") {
+      toggle.style.display = "block";
+  } else {
+      toggle.style.display = "none";
   }
-
-  function toggle_top_ten2() {
-    var toggle = document.getElementById("show_top_ten2");
-    if (toggle.style.display === "none") {
-        toggle.style.display = "block";
-    } else {
-        toggle.style.display = "none";
-    }
-  }
-
+}
 
 function initiate_game() {
   playerShip.start();
   startEnemies();
-  var display = document.getElementById("initial_buttons")
-  display.style.display = "none";
+  var hide = document.getElementById("initiate_button");
+  hide.style.visibility = "hidden";
+  var hide2 = document.getElementById("top_10");
+  hide2.style.visibility = "hidden";
 }

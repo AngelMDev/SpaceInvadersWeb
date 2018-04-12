@@ -17,34 +17,23 @@
 
   <div id="end_game_display">
     <form id="final_form" method="get">
-      Game over! Your score was <span id="user_score">  </span> <br>
+      <span id="user_score">  </span> <br>
       Choose a Username: <input type="text" id="user_name"><br>
       <input type="submit" value="Submit" class="save_button">
       <button type="reset" value="Reset" class="restart_button">Restart</button>
       <br>
     </form>
-    <button onclick="toggle_top_ten2()" class="toggle_top_scores2"> Top 10 scores </button>
-    <div id="show_top_ten2">
-        <span id="top_score1"> 1. </span> <br>
-        <span id="top_score2"> 2. </span> <br>
-        <span id="top_score3"> 3. </span> <br>
-        <span id="top_score4"> 4. </span> <br>
-        <span id="top_score5"> 5. </span> <br>
-        <span id="top_score6"> 6. </span> <br>
-        <span id="top_score7"> 7. </span> <br>
-        <span id="top_score8"> 8. </span> <br>
-        <span id="top_score9"> 9. </span> <br>
-        <span id="top_score10"> 10. </span> <br>
-      </div>
   </div>
 
-  <div id="initial_buttons">
+  <div id="initiate_button">
     <button onclick="initiate_game()" class="start_button"> Start Game </button>
     <br>
-    <button onclick="toggle_top_ten1()" class="toggle_top_scores1"> Top 10 scores </button>
+  </div>
+  <div id="top_10">
+    <button onclick="toggle_top_ten()" class="toggle_top_scores"> Top 10 scores </button>
   </div>
 
-  <div id="show_top_ten1">
+  <div id="show_top_ten">
     <span id="top_score1"> 1. </span> <br>
     <span id="top_score2"> 2. </span> <br>
     <span id="top_score3"> 3. </span> <br>
