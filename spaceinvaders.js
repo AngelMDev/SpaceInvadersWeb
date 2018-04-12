@@ -36,7 +36,6 @@ var enemyShips=[];
 //game controller vars
 var userScore=0;
 var highScore=0;
-var allScore=[];
 var livesRemaining=3;
 var userName='';
 var top_score="top_score";
@@ -369,7 +368,7 @@ function isColliding(a, b) {
 }
 
 
-function gameController() {  
+function gameController() { 
   // switch(div.className){
   //   case "row0":
   //     userScore+=topRowScore
@@ -384,35 +383,49 @@ function gameController() {
   //     userScore+=bottomRowScore
   //   break
   // }
-  document.getElementById("show_score").innerHTML=("Your score: " + userScore); 
-  document.getElementById("user_score").innerHTML=(userScore);
 
-  // if (livesRemaining === 0) {
-  //   allScores.push(userScore);
-  //   allScores.sort();
-  //   highScore = allScores[allScores.length - 1];
-  // }
+  //live scoreboard
+  userScore = document.getElementById("user_score");
+  document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
   document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
 
-  //need to access top 10 scores
-  var times = 11;
-  for(var i=1; i < times; i++){
-    var topScores = document.getElementById("top_score" + i);
-  }
-}
-function toggle_top_ten() {
-  var toggle = document.getElementById("show_top_ten");
-  if (toggle.style.display === "none") {
-      toggle.style.display = "block";
-  } else {
-      toggle.style.display = "none";
+  //end game form
+  if (livesRemaining === 0) {
+    var displayForm = document.getElementById("end_game_display");
+    displayForm.style.visibility = "visible";
+    var userName = document.getElementById("final_form").sumbit();
+
+    //need to access top 10 scores
+    var times = 11;
+    for(var i=1; i < times; i++){
+      var topScores = document.getElementById("top_score" + i);
+    }
   }
 }
 
+  function toggle_top_ten1() {
+    var toggle = document.getElementById("show_top_ten1");
+    if (toggle.style.display === "none") {
+        toggle.style.display = "block";
+    } else {
+        toggle.style.display = "none";
+    }
+  }
+
+  function toggle_top_ten2() {
+    var toggle = document.getElementById("show_top_ten2");
+    if (toggle.style.display === "none") {
+        toggle.style.display = "block";
+    } else {
+        toggle.style.display = "none";
+    }
+  }
+
+
 function initiate_game() {
   playerShip.start();
-  StartEnemies();
+  startEnemies();
   var display = document.getElementById("initial_buttons")
   display.style.display = "none";
 }

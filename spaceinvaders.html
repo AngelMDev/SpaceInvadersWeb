@@ -10,12 +10,12 @@
 <body background="https://www.jpl.nasa.gov/assets/images/content/tmp/home/missions_bg_image.jpg" id="board">
 
   <div id="scoreboard">
-      <span id="show_score">  </span> 
+      <span id="live_score">  </span> 
       <span id="show_lives">  </span>
       <span id="high_score">  </span>
   </div>
 
-  <div id="end_game-display">
+  <div id="end_game_display">
     <form id="final_form" method="get">
       Game over! Your score was <span id="user_score">  </span> <br>
       Choose a Username: <input type="text" id="user_name"><br>
@@ -23,8 +23,8 @@
       <button type="reset" value="Reset" class="restart_button">Restart</button>
       <br>
     </form>
-    <!-- <button onclick="toggle_top_ten()" class="toggle_top_scores"> Top 10 scores </button>
-    <div id="show_top_ten">
+    <button onclick="toggle_top_ten2()" class="toggle_top_scores2"> Top 10 scores </button>
+    <div id="show_top_ten2">
         <span id="top_score1"> 1. </span> <br>
         <span id="top_score2"> 2. </span> <br>
         <span id="top_score3"> 3. </span> <br>
@@ -35,16 +35,16 @@
         <span id="top_score8"> 8. </span> <br>
         <span id="top_score9"> 9. </span> <br>
         <span id="top_score10"> 10. </span> <br>
-      </div> -->
+      </div>
   </div>
 
   <div id="initial_buttons">
     <button onclick="initiate_game()" class="start_button"> Start Game </button>
     <br>
-    <button onclick="toggle_top_ten()" class="toggle_top_scores"> Top 10 scores </button>
+    <button onclick="toggle_top_ten1()" class="toggle_top_scores1"> Top 10 scores </button>
   </div>
 
-  <div id="show_top_ten">
+  <div id="show_top_ten1">
     <span id="top_score1"> 1. </span> <br>
     <span id="top_score2"> 2. </span> <br>
     <span id="top_score3"> 3. </span> <br>
