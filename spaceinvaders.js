@@ -471,7 +471,7 @@ class GameController {
       // var topScores = document.getElementById("top_score" + i);
       // }
     }
-    if (enemyShips.length === 0) {
+    if (destroyedShips.length === 44) {
       stopEnemies();
       var show = document.getElementById("top_10_button");
       show.style.visibility = "visible";
