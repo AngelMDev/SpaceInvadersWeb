@@ -5,6 +5,10 @@ var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/green_alien.pn
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
 var explosionSprite="assets/sprites/explosion.png"
+var playerShootAudio = new Audio('assets/audio/shoot.wav');
+var playerHitAudio = new Audio("assets/audio/explosion.wav");
+var alienHitAudio = new Audio("assets/audio/invaderkilled.wav");
+var soundOn = true;
 var board; 
 var leftBoundary=10;
 var rightBoundary=87;
@@ -88,7 +92,8 @@ document.addEventListener('keydown',function (evt){
     playerShip.moveRight();
   } else if(evt.which== 32){ 
       if (!cannotShoot) {
-        playerShip.shoot();  
+        playerShip.shoot(); 
+        if (soundOn) playerShootAudio.play(); 
       }
     }
 });
@@ -228,6 +233,7 @@ class Enemy {
   destroy(){
     this.enemyShip.style.visibility="hidden";
     gameController.addScore(this.enemyShip.className);
+    if (soundOn) alienHitAudio.play();
   }
 }
 
@@ -301,6 +307,7 @@ class Player {
     setTimeout(playerShip.start,respawnTime,this);
     livesRemaining--;
     gameController.updateUI();
+    if (soundOn) playerHitAudio.play();
   }
 }
 
@@ -456,7 +463,7 @@ class GameController {
       var displayForm = document.getElementById("end_game_display");
       displayForm.style.visibility = "visible";
       document.getElementById("user_score").innerHTML=("Game over! Your score was " + finalScore);
-      var userName = document.getElementById("final_form").sumbit();
+      //var userName = document.getElementById("final_form").submit();
       //need to access top 10 scores
       // var times = 11;
       // for(var i=1; i < times; i++){
@@ -479,7 +486,17 @@ class Level{
     } else {
         toggle.style.display = "none";
     }
-  }
+}
+
+function toggleSound() {
+  var muteToggle = document.getElementById("toggle_sound");
+    if (soundOn){
+    muteToggle.innerHTML="Turn Sound On";
+    } else {
+    muteToggle.innerHTML="Turn Sound Off";
+    }
+    soundOn = !soundOn;
+}
 
 function initiateGame() {
   playerShip.start();
@@ -488,4 +505,11 @@ function initiateGame() {
   hide.style.visibility = "hidden";
   var hide2 = document.getElementById("top_10");
   hide2.style.visibility = "hidden";
+  var hide3 = document.getElementById("toggle_sound");
+  hide3.style.visibility = "hidden";
+}
+
+function reload() {
+  document.getElementById("restart_button");
+  document.location.reload(true);
 }
