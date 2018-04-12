@@ -43,6 +43,7 @@ var projectiles = new Queue();
 reverse=false;
 var playerShip;
 var enemyShips=[];
+var destroyedShips=[];
 //game controller vars
 var userScore=0;
 var highScore=0;
@@ -231,6 +232,7 @@ class Enemy {
   }
 
   destroy(){
+    destroyedShips.push(this);
     this.enemyShip.style.visibility="hidden";
     gameController.addScore(this.enemyShip.className);
     if (soundOn) alienHitAudio.play();
@@ -391,8 +393,8 @@ class Projectile {
     if(direction>0){
       enemyShips.forEach(function(element){
       if (isColliding(projectile,element)&&element.alive&&projectile.active) {
-        element.destroy();
         projectile.recycleProjectile(projectile);
+        element.destroy();     
         if (direction>0){
           cannotShoot=false;
         }
@@ -400,7 +402,7 @@ class Projectile {
       })
       if(parseFloat(projectile.top)<1){
         cannotShoot=false;
-        this.recycleProjectile(projectile)
+        projectile.recycleProjectile(projectile)
       }
     }else{
       if (isColliding(projectile,playerShip)&&playerShip.alive&&projectile.active) {
@@ -409,7 +411,7 @@ class Projectile {
       }
       if(parseFloat(projectile.top)>99){
         console.log(projectile.top)
-        this.recycleProjectile(projectile)
+        projectile.recycleProjectile(projectile)
       }
     }
   }
