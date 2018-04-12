@@ -154,17 +154,6 @@ function moveEnemies(){
     movesRemaining=moveTurns;
     reverse=!reverse;
     downCount--;
-    if(downCount==8){
-      stopEnemies();
-      moveTime-=100;
-      shootTime-=500;
-      startEnemies();
-    }else if(downCount==4){
-      stopEnemies();
-      moveTime-=50;
-      shootTime-=500;
-      startEnemies();
-    }
     if(downCount==0){
       livesRemaining=0;
       gameController.updateUI();
@@ -236,6 +225,26 @@ class Enemy {
     this.enemyShip.style.visibility="hidden";
     gameController.addScore(this.enemyShip.className);
     if (soundOn) alienHitAudio.play();
+    console.log(destroyedShips.length)
+    if(destroyedShips.length==24){
+      stopEnemies();
+      console.log("level 1 increase")
+      moveTime-=100;
+      shootTime-=500;
+      startEnemies();
+    }else if(destroyedShips.length==34){
+      console.log("level 2 increase")
+      stopEnemies();
+      moveTime-=25;
+      shootTime-=250;
+      startEnemies();
+    }else if(destroyedShips.length==43){
+      console.log("level 3 increase")
+      stopEnemies();
+      moveTime-=25;
+      shootTime-=250;
+      startEnemies();
+    }
   }
 }
 
@@ -383,7 +392,6 @@ class Projectile {
   }
 
   recycleProjectile(projectile){ 
-    console.log(projectiles.getLength());
     projectile.setVisibility(false);
     projectile.stop();
     projectiles.enqueue(projectile);   
@@ -410,7 +418,6 @@ class Projectile {
         projectile.recycleProjectile();
       }
       if(parseFloat(projectile.top)>99){
-        console.log(projectile.top)
         projectile.recycleProjectile(projectile)
       }
     }
