@@ -1,7 +1,10 @@
 
+//code.iamkate.com
+function Queue(){var a=[],b=0;this.getLength=function(){return a.length-b};this.isEmpty=function(){return 0==a.length};this.enqueue=function(b){a.push(b)};this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};this.peek=function(){return 0<a.length?a[b]:void 0}};
 var alienSprites=["assets/sprites/blue_alien.png","assets/sprites/green_alien.png","assets/sprites/blue_alien2.png","assets/sprites/red_alien.png"];
 var playerSprite="assets/sprites/player.png";
 var projectileSprite="assets/sprites/projectile.png"
+var explosionSprite="assets/sprites/explosion.png"
 var board; 
 var leftBoundary=10;
 var rightBoundary=87;
@@ -16,6 +19,7 @@ var playerProjectileSpeed=3;
 var enemyProjectileSpeed=2;
 var cannotShoot=true;
 var respawnTime=3000;
+var downCount=8;
 //time in ms that takes for the projectile to update position (less is faster)
 var projectileMoveFreq=40;
 //Enemy move distance
@@ -29,7 +33,7 @@ var moveTurns=6;
 var movesRemaining=moveTurns;
 //Number of projectiles instantiated when the game starts
 var projectileNumber=20;
-var projectiles = new Array();
+var projectiles = new Queue();
 reverse=false;
 var playerShip;
 var enemyShips=[];
@@ -57,14 +61,12 @@ $(document).ready(function() {
 });
 
 function startEnemies(){
-  console.log("first shot");
   enemyMoveInterval = setInterval(moveEnemies,moveTime); 
   setInterval(randomShoot,2000);  
 }
 
 function randomShoot(){
   randomEnemy=Math.floor(Math.random()*(enemyShips.length-1));
-  console.log("enemy "+randomEnemy+" shoots");
   if(enemyShips[randomEnemy].alive){
       
       enemyShips[randomEnemy].shoot(); 
@@ -72,7 +74,6 @@ function randomShoot(){
     randomShoot();
   }
 }
-
 
 document.addEventListener('keydown',function (evt){
   if(evt.which === 37){
@@ -82,20 +83,15 @@ document.addEventListener('keydown',function (evt){
     if(playerShip.left>rightBoundary) return;
     playerShip.moveRight();
   } else if(evt.which== 32){ 
-    if (cannotShoot) return; 
-    playerShip.shoot();  
-    cannotShoot=true;
-  }
+      if (!cannotShoot) {
+        playerShip.shoot();  
+      }
+    }
 });
-
-document.addEventListener('keyup',function(evt){
-  cannotShoot=false;
-});
-
 
 function instantiateProjectiles(projectileNumber){
   for(var i=0;i<projectileNumber;i++){
-    projectiles.push(new Projectile());
+    projectiles.enqueue(new Projectile());
   }
 }
 
@@ -147,6 +143,11 @@ function moveEnemies(){
   if(movesRemaining<0){
     movesRemaining=moveTurns;
     reverse=!reverse;
+    downCount--;
+  }
+  if(downCount==0){
+    livesRemaining=0;
+    gameController.updateUI();
   }
 }
 
@@ -204,7 +205,7 @@ class Enemy {
   }
 
   shoot(){ 
-    var projectile=projectiles.pop();
+    var projectile=projectiles.dequeue();
     projectile.shoot(-1,this.left,this.top,enemyProjectileSpeed);  
   }
 
@@ -227,11 +228,12 @@ class Player {
   }
 
   start(instance=this){
-    console.log("start")
-    cannotShoot=false;
-    instance.playerShip.style.visibility = "visible"
-    instance.playerShip.style.top = "85%";
-    instance.playerShip.style.left = "50%";
+    if(livesRemaining>0){
+      cannotShoot=false;
+      instance.playerShip.style.visibility = "visible"
+      instance.playerShip.style.top = "85%";
+      instance.playerShip.style.left = "50%";
+    }
   }
 
   get alive(){
@@ -272,15 +274,17 @@ class Player {
   }
 
   shoot(){ 
-    var projectile=projectiles.pop();
-    projectile.shoot(1,toPercentage(parseInt(playerShip.left)+0.5),toPercentage(parseInt(playerShip.top)+0.5),playerProjectileSpeed);
-    playerShip.canShoot=false;
+    if(this.alive){
+      var projectile=projectiles.dequeue();
+      projectile.shoot(1,toPercentage(parseInt(playerShip.left)+0.5),toPercentage(parseInt(playerShip.top)+0.5),playerProjectileSpeed);
+      cannotShoot=true;
+    }
   }
 
   destroy(){
     this.playerShip.style.visibility="hidden";
-    cannotShoot=true;
     setTimeout(playerShip.start,respawnTime,this);
+    cannotShoot=true;
   }
 }
 
@@ -336,7 +340,7 @@ class Projectile {
   }
 
   stop(){
-    clearInterval(this.moveProjectileInterval);
+    clearInterval(this.moveProjectileInterval);  
   }
 
   //moves projectile in the specified direction (1 for up or -1 for down) from the x,y position specified
@@ -352,12 +356,13 @@ class Projectile {
     projectile.top = toPercentage(parseInt(projectile.top) + speed *-direction); 
     //direction is passed so the function knows if it was shot by a player or an enemy
     projectile.detectCollision(direction,projectile);
+
   }
 
   recycleProjectile(projectile){
     projectile.setVisibility(false);
     projectile.stop();
-    projectiles.push(projectile);    
+    projectiles.enqueue(projectile);   
   }
 
   detectCollision(direction,projectile){
@@ -366,8 +371,15 @@ class Projectile {
       if (isColliding(projectile,element)&&element.alive&&projectile.active) {
         element.destroy();
         projectile.destroy();
+        if (direction>0){
+          cannotShoot=false;
+        }
       }
       })
+      if(parseInt(projectile.top)<1){
+        projectile.recycleProjectile(projectile);
+        cannotShoot=false;
+      }
     }else{
       if (isColliding(projectile,playerShip)&&playerShip.alive&&projectile.active) {
         playerShip.destroy();
@@ -394,7 +406,7 @@ function isColliding(a, b) {
 class GameController {  
   constructor(startingLives){
     this.startingLives=startingLives;
-    this.UI();
+    this.updateUI();
   }
 
   addScore(row){
@@ -414,7 +426,7 @@ class GameController {
     }
   }
     
-  UI() {
+  updateUI() {
   document.getElementById("live_score").innerHTML=("Your score: " + userScore); 
   document.getElementById("high_score").innerHTML=("Highest score: " + highScore + " By" + userName);
   document.getElementById("show_lives").innerHTML=("Lives remaining: " + livesRemaining);
@@ -433,17 +445,8 @@ class GameController {
   }
 }
 
-  function toggle_top_ten1() {
-    var toggle = document.getElementById("show_top_ten1");
-    if (toggle.style.display === "none") {
-        toggle.style.display = "block";
-    } else {
-        toggle.style.display = "none";
-    }
-  }
-
-  function toggle_top_ten2() {
-    var toggle = document.getElementById("show_top_ten2");
+  function toggleTopTen() {
+    var toggle = document.getElementById();
     if (toggle.style.display === "none") {
         toggle.style.display = "block";
     } else {
@@ -452,7 +455,7 @@ class GameController {
   }
 
 
-function initiate_game() {
+function initiateGame() {
   playerShip.start();
   startEnemies();
   var display = document.getElementById("initial_buttons")
